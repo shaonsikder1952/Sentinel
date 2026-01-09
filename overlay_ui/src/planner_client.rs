@@ -44,14 +44,14 @@ pub struct AutomationInfo {
 
 pub struct PlannerClient {
     base_url: String,
-    client: reqwest::Client,
+    client: Option<reqwest::Client>,
 }
 
 impl PlannerClient {
     pub fn new(base_url: String) -> Self {
         Self {
             base_url,
-            client: reqwest::Client::new(),
+            client: None,
         }
     }
 
