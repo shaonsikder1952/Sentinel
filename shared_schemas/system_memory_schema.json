@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "System Memory Schema",
+  "version": "1.0.0",
+  "description": "Schema for system-level memory (long-term, cross-project knowledge)",
+  "type": "object",
+  "properties": {
+    "app_schemas": {
+      "type": "object",
+      "description": "Known application schemas and structures",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "app_name": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "verified_selectors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "selector": {
+                  "type": "string"
+                },
+                "semantic_type": {
+                  "type": "string"
+                },
+                "verified_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "success_rate": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          },
+          "ui_patterns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pattern_name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "selectors": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "safety_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "rule_type": {
+            "type": "string",
+            "enum": ["approval_required", "verification_required", "rate_limit", "domain_restriction"]
+          },
+          "condition": {
+            "type": "object",
+            "description": "Condition that triggers this rule"
+          },
+          "action": {
+            "type": "string",
+            "description": "Action to take when rule is triggered"
+          }
+        }
+      }
+    },
+    "workflow_templates": {
+      "type": "array",
+      "items": {
+        "$ref": "../workflow_schema.json"
+      },
+      "description": "Reusable workflow templates"
+    },
+    "version": {
+      "type": "string"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["version", "last_updated"]
+}
+

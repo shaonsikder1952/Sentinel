@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Memory Schema",
+  "version": "1.0.0",
+  "description": "Schema for task-level memory (short-term, per-task context)",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Unique identifier for the task"
+    },
+    "task_name": {
+      "type": "string",
+      "description": "Human-readable task name"
+    },
+    "task_source": {
+      "type": "string",
+      "enum": ["user_manual", "user_chat", "ai_auto_detected", "ai_suggested", "scheduled"],
+      "description": "How the task was created"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "approved", "in_progress", "paused", "completed", "failed", "cancelled"],
+      "description": "Current status of the task"
+    },
+    "approval_flags": {
+      "type": "object",
+      "properties": {
+        "pre_approval_required": {
+          "type": "boolean",
+          "default": true
+        },
+        "pre_approval_granted": {
+          "type": "boolean",
+          "default": false
+        },
+        "pre_approval_timestamp": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "post_approval_required": {
+          "type": "boolean",
+          "default": true
+        },
+        "post_approval_granted": {
+          "type": "boolean",
+          "default": false
+        },
+        "post_approval_timestamp": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "auto_approved": {
+          "type": "boolean",
+          "default": false,
+          "description": "Task is marked for auto-approval (repetitive tasks)"
+        }
+      },
+      "required": ["pre_approval_required", "pre_approval_granted", "post_approval_required", "post_approval_granted"]
+    },
+    "scheduling": {
+      "type": ["object", "null"],
+      "properties": {
+        "schedule_type": {
+          "type": "string",
+          "enum": ["once", "recurring"]
+        },
+        "next_run": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Next scheduled execution time"
+        },
+        "recurrence": {
+          "type": "object",
+          "properties": {
+            "frequency": {
+              "type": "string",
+              "enum": ["daily", "weekly", "monthly", "custom"]
+            },
+            "interval": {
+              "type": "integer",
+              "description": "Interval for custom frequency"
+            },
+            "days_of_week": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 6
+              }
+            },
+            "time": {
+              "type": "string",
+              "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+            }
+          }
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "automation": {
+      "type": "object",
+      "properties": {
+        "is_repetitive": {
+          "type": "boolean",
+          "default": false
+        },
+        "auto_run_enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "After approval, can run automatically without pre-approval"
+        },
+        "execution_count": {
+          "type": "integer",
+          "default": 0
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "current_step": {
+      "type": ["string", "null"],
+      "description": "Current step_id being executed"
+    },
+    "page_state": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "initial_state_hash": {
+          "type": "string",
+          "description": "Hash of initial DOM state"
+        },
+        "elements_seen": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "selector": {
+                "type": "string"
+              },
+              "semantic_type": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "elements_relevant": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Selectors of relevant elements for this task"
+        }
+      }
+    },
+    "execution_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "action": {
+            "type": "string"
+          },
+          "dom_snapshot_hash": {
+            "type": "string"
+          },
+          "extracted_data": {
+            "type": ["object", "null"]
+          },
+          "verification_result": {
+            "type": "object",
+            "properties": {
+              "passed": {
+                "type": "boolean"
+              },
+              "checks": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "retry_count": {
+            "type": "integer",
+            "default": 0
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["task_id", "task_name", "task_source", "status", "approval_flags", "created_at"]
+}
+

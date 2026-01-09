@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Workflow Schema",
+  "version": "1.0.0",
+  "description": "Schema for defining workflow steps and execution contracts",
+  "type": "object",
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "description": "Unique identifier for the workflow"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/step"
+      }
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    }
+  },
+  "required": ["workflow_id", "version", "steps"],
+  "definitions": {
+    "step": {
+      "type": "object",
+      "properties": {
+        "step_id": {
+          "type": "string",
+          "description": "Unique identifier for the step"
+        },
+        "action": {
+          "type": "string",
+          "enum": ["navigate", "click", "type", "extract", "wait", "verify", "submit"],
+          "description": "Type of action to perform"
+        },
+        "target": {
+          "type": "string",
+          "description": "CSS selector, XPath, or semantic identifier for the target element"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Action-specific parameters"
+        },
+        "expected_schema": {
+          "type": "object",
+          "description": "Expected data schema for extraction/verification"
+        },
+        "verification": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["schema", "sanity_check", "element_presence", "numeric_range"]
+          },
+          "description": "List of verification checks to perform"
+        },
+        "retry_config": {
+          "type": "object",
+          "properties": {
+            "max_retries": {
+              "type": "integer",
+              "default": 2
+            },
+            "retry_delay_ms": {
+              "type": "integer",
+              "default": 1000
+            }
+          }
+        },
+        "requires_approval": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this step requires pre-execution approval"
+        }
+      },
+      "required": ["step_id", "action", "target"]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_by": {
+          "type": "string",
+          "enum": ["user", "ai_auto", "ai_suggested"]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+

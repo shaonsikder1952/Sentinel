@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Memory Schema",
+  "version": "1.0.0",
+  "description": "Schema for project-level memory (medium-term, recurring rules and workflows)",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Unique identifier for the project"
+    },
+    "project_name": {
+      "type": "string"
+    },
+    "recurring_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Pattern that triggers this rule (e.g., 'weekly report', 'login to dashboard')"
+          },
+          "auto_create_task": {
+            "type": "boolean",
+            "default": false
+          },
+          "suggest_task": {
+            "type": "boolean",
+            "default": true
+          },
+          "workflow_template": {
+            "type": "string",
+            "description": "Reference to workflow template to use"
+          }
+        }
+      }
+    },
+    "workflow_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "executed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "duration_ms": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "automation_preferences": {
+      "type": "object",
+      "properties": {
+        "default_pre_approval": {
+          "type": "boolean",
+          "default": true
+        },
+        "default_post_approval": {
+          "type": "boolean",
+          "default": true
+        },
+        "auto_approve_repetitive_after": {
+          "type": "integer",
+          "description": "Number of successful runs before auto-approving repetitive tasks",
+          "default": 3
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["project_id", "project_name", "created_at"]
+}
+
