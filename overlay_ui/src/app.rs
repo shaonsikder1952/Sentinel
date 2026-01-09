@@ -91,15 +91,15 @@ impl SentinelApp {
         self.task_manager = Some(task_manager);
         self.scheduler = Some(scheduler);
 
-        // Start scheduler in background
-        let scheduler_clone = self.scheduler.clone().unwrap();
-        tokio::spawn(async move {
-            if let Err(e) = scheduler_clone.start_scheduler_loop().await {
-                eprintln!("Scheduler error: {}", e);
-            }
-        });
-
-        // Position window to right 20%
+//         // Start scheduler in background
+//         let scheduler_clone = self.scheduler.clone().unwrap();
+//         tokio::spawn(async move {
+//             if let Err(e) = scheduler_clone.start_scheduler_loop().await {
+//                 eprintln!("Scheduler error: {}", e);
+//             }
+//         });
+// 
+//         // Position window to right 20%
         self.window_manager.position_overlay(ctx, frame);
     }
 
