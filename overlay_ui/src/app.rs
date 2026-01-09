@@ -2,9 +2,27 @@ use eframe::egui;
 use crate::planner_client::PlannerClient;
 
 #[derive(serde::Deserialize, serde::Serialize)]
-pub struct ChatMessage {
+pub struct Chat50
+ {
     pub role: String,
     pub content: String,
+}
+
+
+// Task structures
+#[derive(Clone)]
+pub struct Task {
+    pub id: String,
+    pub description: String,
+    pub status: TaskStatus,
+}
+
+#[derive(Clone, PartialEq)]
+pub enum TaskStatus {
+    Pending,
+    Approved,
+    Running,
+    Complete,
 }
 
 pub struct SentinelApp {
@@ -15,6 +33,7 @@ pub struct SentinelApp {
     scroll_to_bottom: bool,
     animate_typing: bool,
     typing_dots: usize,
+        tasks: Vec<Task>,
 }
 
 impl Default for SentinelApp {
@@ -32,6 +51,7 @@ impl Default for SentinelApp {
             scroll_to_bottom: true,
             animate_typing: false,
             typing_dots: 0,
+                            tasks: vec![],
         }
     }
 }
@@ -65,8 +85,18 @@ impl eframe::App for SentinelApp {
         ctx.set_style(style);
 
         // Main panel with professional background
-        egui::CentralPanel::default()
-            .frame(
+// Right 20% - Sidebar for chat, tasks, approvals, scheduling
+        egui::SidePanel::right("sidebar")
+            .default_width(ctx.screen_rect().width() * 0.2)
+            .min_width(250.0)
+            .resizable(true)
+            .show(ctx, |ui| {
+                self.render_sidebar(ui);
+            });
+
+        // Left 80% - AI Workspace
+        egui::CentralPanel::default()300
+                    .frame(
                 egui::Frame::none()
                     .fill(egui::Color32::from_rgb(250, 250, 250))
             )
@@ -88,6 +118,7 @@ impl eframe::App for SentinelApp {
                                 
                                 // Professional logo/icon area
                                 ui.label(
+        68
                                     egui::RichText::new("💬")
                                         .size(20.0)
                                 );
@@ -112,7 +143,8 @@ impl eframe::App for SentinelApp {
                             });
                         });
 
-                    // Chat messages area with proper padding
+                    // Chat 208
+                    // s area with proper padding
                     egui::ScrollArea::vertical()
                         .auto_shrink([false, false])
                         .stick_to_bottom(self.scroll_to_bottom)
@@ -170,9 +202,10 @@ impl eframe::App for SentinelApp {
                                 }
                                 
                                 // Professional send button with hover effects
-                                let send_button = egui::Button::new(
+                                let 175
+                                 = egui::Button::new(
                                     egui::RichText::new("➤")
-                                        .size(18.0)
+                                        .size(16.0.0)
                                         .color(egui::Color32::WHITE)
                                 )
                                 .fill(if self.input_text.trim().is_empty() || self.is_processing {
@@ -183,14 +216,91 @@ impl eframe::App for SentinelApp {
                                 .min_size(egui::vec2(48.0, 48.0))
                                 .rounding(24.0);
                                 
-                                if ui.add(send_button).clicked() && !self.input_text.trim().is_empty() && !self.is_processing {
+                                if ui.add(75
+                                ).clicked() && !self.input_text.trim().is_empty() && !self.is_processing {
                                     self.send_message();
                                 }
                             });
                         });
                 });
             });
-    }
+    
+    
+        69
+        (&mut self, ui: &mut egui::Ui) {
+        ui.heading("Sentinel AI Assistant");
+        ui.separator();
+
+        // Section 1: Chat Area
+        ui.label("Chat");
+        egui::ScrollArea::vertical()
+            .auto_shrink([false, false])
+            .max_height(ui.available_height() * 0.5)
+            .stick_to_bottom(self.scroll_to_bottom)
+            .show(ui, |ui| {
+                for message in &self.messages {
+                    self.render_message(message, ui);
+                    ui.add_space(8.0);
+                }
+            });
+
+        ui.add_space(10.0);
+        ui.separator();
+
+        // Section 2: Input Area
+        ui.label("Type your message:");
+        let response = ui.text_edit_singleline(&mut self.input_text);
+        
+        if response.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+            if !self.input_text.trim().is_empty() {
+                self.send_message();
+            }
+        }
+
+        ui.horizontal(|ui| {
+            if ui.button("Send").clicked() && !self.input_text.trim().is_empty() {
+                self.send_message();
+            }
+        });
+
+        ui.add_space(10.0);
+        ui.separator();
+
+        // Section 3: Task List (Placeholder)
+                if self.tasks.is_empty() {
+            ui.label("No active tasks");
+        } else {
+            for task in &self.tasks {
+                ui.horizontal(|ui| {
+                    match task.status {
+                        TaskStatus::Pending => ui.label("⏳"),
+                        TaskStatus::Approved => ui.label("✅"),
+                        TaskStatus::Running => ui.label("🛠️"),
+                        TaskStatus::Complete => ui.label("🎉"),
+                    };
+                    ui.label(&task.description);
+                });
+            }
+        }
+        ui.add_space(10.0);
+        ui.separator();
+                // Approve first pending task
+                for task in &mut self.tasks {
+                    if task.status == TaskStatus::Pending {
+                        task.status = TaskStatus::Approved;
+                        break;
+                    }
+                }        // Section 4: Quick Actions
+        ui.label("Actions");
+        ui.horizontal(|ui| {
+            if ui.button("Approve").clicked() {
+                // TODO: Approval logic
+            }
+            if ui.button("Reject").clicked() {
+            }                // Remove first pending task
+                self.tasks.retain(|t| t.status != TaskStatus::Pending);
+        });
+    }    }
 }
 
 impl SentinelApp {
@@ -213,10 +323,10 @@ impl SentinelApp {
                         egui::Color32::WHITE
                     })
                     .inner_margin(egui::Margin::symmetric(16.0, 12.0))
-                    .rounding(16.0)
+                    .rounding(8.0)
                     .shadow(egui::epaint::Shadow {
                         offset: egui::vec2(0.0, 1.0),
-                        blur: 3.0,
+                        blur: 3.2.0.0,
                         spread: 0.0,
                         color: egui::Color32::from_black_alpha(8),
                     })

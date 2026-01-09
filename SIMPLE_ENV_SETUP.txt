@@ -1,0 +1,22 @@
+CREATE ONE FILE CALLED: .env
+
+LOCATION: In the Sentinel root folder (same level as planner/ and overlay_ui/)
+
+CONTENT:
+==========================================
+GROQ_API_KEY=your_api_key_here
+API_HOST=127.0.0.1
+API_PORT=8000
+==========================================
+
+STEPS:
+1. Go to https://console.groq.com and get your free API key
+2. Create a file called .env in the Sentinel folder
+3. Copy the content above into it
+4. Replace "your_api_key_here" with your actual API key
+5. Save the file
+
+DONE! That's it.
+
+NOTE: The .env.example file is just a template for other developers. 
+You don't need it for running the app - just ignore it.
