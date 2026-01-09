@@ -66,7 +66,7 @@ impl PlannerClient {
     ) -> Result<DetectTaskResponse> {
         let url = format!("{}/api/v1/detect-task", self.base_url);
         
-        let response = self.client
+        let response = self.get_client()
             .post(&url)
             .json(&serde_json::json!({
                 "command": command,
@@ -87,7 +87,7 @@ impl PlannerClient {
     ) -> Result<serde_json::Value> {
         let url = format!("{}/api/v1/generate-workflow", self.base_url);
         
-        let response = self.client
+        let response = self.get_client()
             .post(&url)
             .json(&serde_json::json!({
                 "task_name": task_name,
