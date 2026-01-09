@@ -44,15 +44,19 @@ pub struct AutomationInfo {
 
 pub struct PlannerClient {
     base_url: String,
-    client: Option<reqwest::Client>,
+    client: std::sync::OnceLock<reqwest::Client>,
 }
 
 impl PlannerClient {
     pub fn new(base_url: String) -> Self {
         Self {
             base_url,
-            client: None,
+            client: std::sync::OnceLock::new(),
         }
+    }
+    
+    fn get_client(&self) -> &reqwest::Client {
+        self.client.get_or_init(|| reqwest::Client::new())
     }
 
     pub async fn detect_task_from_chat(
