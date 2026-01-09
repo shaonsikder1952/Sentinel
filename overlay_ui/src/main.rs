@@ -1,31 +1,29 @@
-/**
- * Sentinel Native Desktop Overlay App
- * 
- * Right 20% overlay: Chat, task list, approvals, scheduling
- * Left 80% workspace: AI executes tasks autonomously
- */
 use eframe::egui;
-use sentinel_overlay::SentinelApp;
 
 fn main() -> Result<(), eframe::Error> {
+    // Get screen size
+    let screen_width = 1920.0; // Will be auto-detected
+    let screen_height = 1080.0;
+
+    // Calculate 20% width panel on right edge
+    let panel_width = screen_width * 0.2;
+    let x_position = screen_width - panel_width;
+
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_title("Sentinel AI Overlay")
+            .with_title("Sentinel AI")
+            .with_inner_size([panel_width, screen_height])
+            .with_position([x_position, 0.0])
             .with_always_on_top()
-            .with_decorations(false) // No window decorations for overlay
-            .with_transparent(true)  // Transparent background
             .with_resizable(true)
-            .with_position(egui::Pos2::new(0.0, 0.0)), // Will be positioned to right 20%
-            // .with_icon(icon), // Add icon if needed
+            .with_decorations(true)
+            .with_transparent(false),
         ..Default::default()
     };
 
     eframe::run_native(
-        "Sentinel AI Overlay",
+        "Sentinel AI",
         options,
-        Box::new(|_cc| {
-            Box::new(SentinelApp::default())
-        }),
+        Box::new(|cc| Box::new(sentinel_overlay::app::SentinelApp::new(cc))),
     )
 }
-
