@@ -29,9 +29,7 @@ async fn main() -> anyhow::Result<()> {
     let (ipc_layer, request_rx, response_tx) = IpcLayer::new(task_manager.clone());
     
     // Start IPC handler loop
-    let ipc_clone = ipc_layer.clone();
     tokio::spawn(async move {
-        use tokio::sync::mpsc;
         let mut receiver = request_rx;
         while let Some(request) = receiver.recv().await {
             if let Err(e) = ipc_clone.handle_request(request, &response_tx).await {
