@@ -38,7 +38,7 @@ async def root():
 async def chat(msg: ChatMessage):
     try:
         completion = groq_client.chat.completions.create(
-            model="mixtral-8x7b-32768",
+            model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": msg.message}],
             temperature=0.7,
             max_tokens=1024,
@@ -52,7 +52,7 @@ async def create_task(task: TaskRequest):
     try:
         # Use AI to analyze and structure the task
         completion = groq_client.chat.completions.create(
-            model="mixtral-8x7b-32768",
+            model="llama-3.3-70b-versatile",
             messages=[{
                 "role": "system",
                 "content": "You are a task planning assistant. Break down tasks into actionable steps."
