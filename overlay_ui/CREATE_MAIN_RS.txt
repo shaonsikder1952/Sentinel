@@ -1,0 +1,13 @@
+Your overlay_ui/src/main.rs file is missing!
+
+Run this on your local Mac to create it:
+
+cd /Users/mdshaonsikder/dev/projects/Sentinel/overlay_ui
+mkdir -p src
+
+Then paste the file contents from GitHub or run this:
+
+curl -o src/main.rs https://raw.githubusercontent.com/shaonsikder1952/Sentinel/main/overlay_ui/src/main.rs
+
+Or create it manually:
+(see the full code in the next message)
